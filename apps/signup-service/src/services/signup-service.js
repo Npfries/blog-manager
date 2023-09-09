@@ -12,7 +12,7 @@ class SignupService {
   constructor(app) {
     this.app = app;
   }
-  signup(name, email, password) {
+  signup(name, email, handle, password) {
     const uuid = uuidv4();
     const userSalt = salt();
     const hashed = hash(password, userSalt);
@@ -20,6 +20,7 @@ class SignupService {
       uuid,
       name,
       email,
+      handle,
       salt: userSalt,
       hash: hashed,
     };
@@ -27,6 +28,7 @@ class SignupService {
     return {
       uuid,
       name,
+      handle,
       email,
     };
   }

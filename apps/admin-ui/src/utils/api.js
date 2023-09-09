@@ -30,8 +30,8 @@ const login = async (email, password) => {
   if (response?.body?.jwt) return response.body.jwt;
 };
 
-const signup = async (name, email, password) => {
-  const response = await postRequest(`${TRANSPORT}://${services.SIGNUP}.${API_DOMAIN}/signup`, { name, email, password });
+const signup = async (name, email, handle, password) => {
+  const response = await postRequest(`${TRANSPORT}://${services.SIGNUP}.${API_DOMAIN}/signup`, { name, email, handle, password });
   return response;
 };
 

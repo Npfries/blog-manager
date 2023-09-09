@@ -29,9 +29,10 @@ services:
       target: dev
       additional_contexts:
         - repo=./
-
     volumes:
       - ./apps/post-service/src:/app/src
+    environment:
+      - RABBIT_MQ_HOST=amqp://rabbitmq
     depends_on:
       db:
         condition: service_healthy
@@ -40,6 +41,28 @@ services:
       - "traefik.http.routers.post-service.rule=Host(`post-service.localhost.com`)"
       - "traefik.http.routers.post-service.entrypoints=web"
       - "traefik.http.services.post-service.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  blog-service:
+    container_name: blog-service
+    build:
+      context: ./apps/blog-service
+      target: dev
+      additional_contexts:
+        - repo=./
+    volumes:
+      - ./apps/blog-service/src:/app/src
+    environment:
+      - RABBIT_MQ_HOST=amqp://rabbitmq
+    depends_on:
+      db:
+        condition: service_healthy
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.blog-service.rule=Host(`blog-service.localhost.com`)"
+    #   - "traefik.http.routers.blog-service.entrypoints=web"
+    #   - "traefik.http.services.blog-service.loadbalancer.server.port=3000"
     networks:
       - blog-manager
 
@@ -153,6 +176,19 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - blog-manager
+
+  httpd:
+    container_name: httpd
+    image: httpd
+    volumes:
+      - ./tmp/:/usr/local/apache2/htdocs/:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.blog.rule=Host(`blog.localhost.com`)"
+      - "traefik.http.routers.blog.entrypoints=web"
+      - "traefik.http.services.blog.loadbalancer.server.port=80"
     networks:
       - blog-manager
 

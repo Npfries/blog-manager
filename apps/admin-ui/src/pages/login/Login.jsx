@@ -1,5 +1,4 @@
 import { Card, Center, Tabs } from "@mantine/core";
-import { IconPhoto, IconMessageCircle } from "@tabler/icons-react";
 import LoginForm from "../../components/LoginForm";
 import SignupForm from "../../components/SignupForm";
 
@@ -9,12 +8,8 @@ const Login = () => {
       <Card w={480} mt="xl">
         <Tabs defaultValue="login">
           <Tabs.List>
-            <Tabs.Tab value="login" icon={<IconPhoto size="0.8rem" />}>
-              Log In
-            </Tabs.Tab>
-            <Tabs.Tab value="signup" icon={<IconMessageCircle size="0.8rem" />}>
-              Sign Up
-            </Tabs.Tab>
+            <Tabs.Tab value="login">Log In</Tabs.Tab>
+            <Tabs.Tab value="signup">Sign Up</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="login" pt="xs">

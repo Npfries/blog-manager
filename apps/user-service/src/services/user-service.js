@@ -16,11 +16,12 @@ class UserService {
    * @param {string} email
    * @param {string} name
    */
-  async create(uuid, email, name) {
+  async create(uuid, email, handle, name) {
     return this.db.user.create({
       data: {
         uuid,
         email,
+        handle,
         name,
       },
     });

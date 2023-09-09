@@ -6,8 +6,8 @@ import * as Types from "../types.js";
  */
 async function routes(app, options) {
   app.post("/signup", (req, res) => {
-    const { name, email, password } = req.body;
-    const result = app.signupService.signup(name, email, password);
+    const { name, email, handle, password } = req.body;
+    const result = app.signupService.signup(name, email, handle, password);
     res.send(result);
   });
 }

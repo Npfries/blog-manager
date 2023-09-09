@@ -21,7 +21,10 @@ async function routes(app, options) {
       res.status(400);
       res.send("Missing fields");
     }
-    return app.postService.create(title, content, author, authorUuid);
+    const record = await app.postService.create(title, content, author, authorUuid);
+
+    app.eventService.sendPostModifiedEvent({ authorUuid, postUuid: record.uuid });
+    return record;
   });
 
   app.put("/post/:id", { onRequest: [app.authenticate] }, async (req, res) => {

@@ -23,23 +23,24 @@ class EventService {
   }
 
   async init() {
-    const queue = "user-service";
+    const queue = "blog-service";
     this.connection = await amqplib.connect(process.env.RABBIT_MQ_HOST ?? "localhost");
     this.channel = await this.connection.createChannel();
     await this.channel.assertQueue(queue);
-    await this.channel.bindQueue(queue, exchanges.USER_CREATED, "");
+    await this.channel.bindQueue(queue, exchanges.POST_MODIFIED, "");
 
     this.channel.consume(queue, async (msg) => {
       try {
         if (msg !== null) {
-          const { uuid, email, handle, name } = JSON.parse(msg.content.toString());
+          const { postUuid, authorUuid } = JSON.parse(msg.content.toString());
           this.channel.ack(msg);
-          await this.app.userService.create(uuid, email, handle, name);
+          console.log("published");
+          // await this.app.blogpostService.create();
         } else {
           console.log("Consumer cancelled by server");
         }
       } catch (e) {
-        console.log("Error creating user:", e);
+        console.log("Error updating post: ", e);
       }
     });
   }
