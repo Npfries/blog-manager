@@ -1,0 +1,147 @@
+version: "3.9"
+
+services:
+  admin-ui:
+    container_name: admin-ui
+    build:
+      context: ./apps/admin-ui
+      target: dev
+      additional_contexts:
+        - repo=./
+
+    volumes:
+      - ./apps/admin-ui/src:/app/src
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin-ui.rule=Host(`admin.localhost.com`)"
+      - "traefik.http.routers.admin-ui.entrypoints=web"
+      - "traefik.http.services.admin-ui.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  post-service:
+    container_name: post-service
+    build:
+      context: ./apps/post-service
+      target: dev
+      additional_contexts:
+        - repo=./
+
+    volumes:
+      - ./apps/post-service/src:/app/src
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.post-service.rule=Host(`post-service.localhost.com`)"
+      - "traefik.http.routers.post-service.entrypoints=web"
+      - "traefik.http.services.post-service.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  user-service:
+    container_name: user-service
+    build:
+      context: ./apps/user-service
+      target: dev
+      additional_contexts:
+        - repo=./
+
+    volumes:
+      - ./apps/user-service/src:/app/src
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-service.rule=Host(`user-service.localhost.com`)"
+      - "traefik.http.routers.user-service.entrypoints=web"
+      - "traefik.http.services.user-service.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ./apps/auth-service
+      target: dev
+      additional_contexts:
+        - repo=./
+    volumes:
+      - ./apps/auth-service/src:/app/src
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth-service.rule=Host(`auth-service.localhost.com`)"
+      - "traefik.http.routers.auth-service.entrypoints=web"
+      - "traefik.http.services.auth-service.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  signup-service:
+    container_name: signup-service
+    build:
+      context: ./apps/signup-service
+      target: dev
+      additional_contexts:
+        - repo=./
+    volumes:
+      - ./apps/signup-service/src:/app/src
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.signup-service.rule=Host(`signup-service.localhost.com`)"
+      - "traefik.http.routers.signup-service.entrypoints=web"
+      - "traefik.http.services.signup-service.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  db:
+    container_name: db
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: "healtcheck.sh --su-mysql --connect --innodb_initialized"
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 5s
+    networks:
+      - blog-manager
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    ports:
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 3s
+      timeout: 30s
+      retries: 3
+
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - blog-manager
+
+networks:
+  blog-manager:
