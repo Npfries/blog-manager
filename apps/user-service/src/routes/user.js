@@ -14,9 +14,7 @@ async function routes(app, options) {
 
   app.get("/me", { onRequest: [app.authenticate] }, async (req, res) => {
     const uuid = req.jwtPayload.uuid;
-    console.log(uuid);
     const result = await app.userService.find(uuid);
-    console.log(result);
     res.send(result);
   });
 

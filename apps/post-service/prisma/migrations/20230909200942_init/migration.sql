@@ -6,6 +6,7 @@ CREATE TABLE `Post` (
     `content` VARCHAR(191) NOT NULL,
     `author` VARCHAR(191) NOT NULL,
     `authorUuid` VARCHAR(191) NOT NULL,
+    `deleted` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

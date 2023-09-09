@@ -18,4 +18,5 @@ model Post {
   content   String
   author    String
   authorUuid  String 
+  deleted   Boolean @default(false)
 }

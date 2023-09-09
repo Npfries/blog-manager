@@ -16,4 +16,5 @@ model User {
   uuid  String @unique
   email String  @unique
   name  String?
+  deleted Boolean @default(false)
 }
