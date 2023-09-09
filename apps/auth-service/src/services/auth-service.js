@@ -12,24 +12,25 @@ class AuthService {
   }
 
   /**
-   * Creates a new user
+   *
+   * @param {string} uuid
    * @param {string} email
-   * @param {string} password
+   * @param {string} salt
+   * @param {string} hash
    */
-  async create(email, password) {
-    const userSalt = salt();
-    const hashed = hash(password, userSalt);
+  async create(uuid, email, salt, hash) {
     await this.db.user.create({
       data: {
-        email: email,
-        password: hashed,
-        salt: userSalt,
+        uuid,
+        email,
+        password: hash,
+        salt: salt,
       },
     });
   }
 
   async validate(email, password) {
-    if (!email || !password) return false;
+    if (!email || !password) return null;
 
     const user = await this.db.user.findUnique({
       where: {
@@ -37,11 +38,11 @@ class AuthService {
       },
     });
 
-    if (!user) return false;
+    if (!user) return null;
 
-    if (user.password === hash(password, user.salt)) return true;
+    if (user.password === hash(password, user.salt)) return user.uuid;
 
-    return false;
+    return null;
   }
 }
 

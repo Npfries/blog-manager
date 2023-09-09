@@ -3,7 +3,16 @@ import { v4 as uuidv4 } from "uuid";
 import { salt, hash } from "@blog-manager/crypto";
 
 class SignupService {
-  async signup(name, email, password) {
+  app;
+
+  /**
+   *
+   * @param {Types.App} app
+   */
+  constructor(app) {
+    this.app = app;
+  }
+  signup(name, email, password) {
     const uuid = uuidv4();
     const userSalt = salt();
     const hashed = hash(password, userSalt);
@@ -11,8 +20,14 @@ class SignupService {
       uuid,
       name,
       email,
-      userSalt,
-      hashed,
+      salt: userSalt,
+      hash: hashed,
+    };
+    this.app.eventService.sendUserCreatedEvent(signupEvent);
+    return {
+      uuid,
+      name,
+      email,
     };
   }
 }
@@ -22,7 +37,7 @@ class SignupService {
  * @param {Object} options
  */
 const signupServiceSingleton = async (app, options) => {
-  const service = new SignupService();
+  const service = new SignupService(app);
   app.decorate("signupService", service);
 };
 

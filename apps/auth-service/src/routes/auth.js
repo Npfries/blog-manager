@@ -7,12 +7,16 @@ import * as Types from "../types.js";
 async function routes(app, options) {
   app.post("/login", async (req, res) => {
     const { email, password } = req.body;
-    const isValid = await app.authService.validate(email, password);
-    if (isValid) {
-      return app.jwtService.sign(email);
+    const uuid = await app.authService.validate(email, password);
+    if (uuid) {
+      const jwt = await app.jwtService.sign(uuid);
+
+      return {
+        jwt,
+      };
     } else {
       res.status(401);
-      return res.send("Authentication Failed.");
+      return {};
     }
   });
 

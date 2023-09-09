@@ -1,13 +1,17 @@
 import { TextInput, PasswordInput, Button } from "@mantine/core";
 import { useState } from "react";
+import api from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const signup = () => {
-    console.log("signup!", name, email, password);
+  const signup = async () => {
+    const result = await api.signup(name, email, password);
+    if (result.status === 200) navigate(0);
   };
 
   return (

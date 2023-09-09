@@ -14,8 +14,10 @@ class PostService {
     return this.db.post.create({
       data: {
         title: "",
-        published: true,
-        authorId: 1234,
+        uuid: "",
+        content: "",
+        author: "",
+        authorUuid: "",
       },
     });
   }

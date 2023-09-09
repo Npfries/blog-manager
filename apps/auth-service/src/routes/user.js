@@ -5,10 +5,10 @@ import * as Types from "../types.js";
  * @param {Object} options
  */
 async function routes(app, options) {
-  app.post("/user", async (req, res) => {
-    const { email, password } = req.body;
-    return app.authService.create(email, password);
-  });
+  //   app.post("/user", async (req, res) => {
+  //     const { email, password } = req.body;
+  //     return app.authService.create(email, password);
+  //   });
 }
 
 export default routes;

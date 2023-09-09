@@ -7,6 +7,7 @@ import { databaseService } from "@blog-manager/fastify-modules";
 import { postServiceSingleton } from "./services/post-service.js";
 import { PrismaClient } from "../generated/client/index.js";
 import * as Types from "./types.js";
+import cors from "@fastify/cors";
 
 /**
  * @type {Types.App}
@@ -15,6 +16,7 @@ const app = fastify({
   logger: true,
 });
 
+app.register(cors);
 app.register(fp((app, options) => databaseService(app, options, PrismaClient)));
 app.register(fp(postServiceSingleton));
 app.register(healthCheckRoutes);

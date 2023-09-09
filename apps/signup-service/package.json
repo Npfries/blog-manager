@@ -7,11 +7,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.js",
-    "start": "node --require ./src/instrumentation.cjs ./src/index.js"
+    "start": "node --require ./src/instrumentation.cjs --require dotenv/config ./src/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cors": "^8.3.0",
     "@opentelemetry/auto-instrumentations-node": "^0.39.2",
     "@opentelemetry/sdk-metrics": "^1.15.2",
     "@opentelemetry/sdk-node": "^0.41.2",

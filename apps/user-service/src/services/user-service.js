@@ -10,11 +10,30 @@ class UserService {
     this.db = db;
   }
 
-  async create() {
+  /**
+   *
+   * @param {string} uuid
+   * @param {string} email
+   * @param {string} name
+   */
+  async create(uuid, email, name) {
     return this.db.user.create({
       data: {
-        email: "test@test.com",
-        name: "testuser",
+        uuid,
+        email,
+        name,
+      },
+    });
+  }
+
+  /**
+   *
+   * @param {string} uuid
+   */
+  async find(uuid) {
+    return this.db.user.findUnique({
+      where: {
+        uuid,
       },
     });
   }

@@ -11,9 +11,9 @@ class JwtService {
     this.secret = process.env.JWT_SECRET ?? "";
   }
 
-  sign(email) {
-    return jwt.sign({ email }, this.secret, {
-      expiresIn: 10,
+  sign(uuid) {
+    return jwt.sign({ uuid }, this.secret, {
+      expiresIn: "1d",
     });
   }
 
