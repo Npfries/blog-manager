@@ -236,6 +236,16 @@ services:
     networks:
       - blog-manager
 
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 16686:16686
+    networks:
+      - blog-manager
+
 networks:
   blog-manager:
 
