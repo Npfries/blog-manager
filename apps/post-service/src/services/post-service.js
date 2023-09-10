@@ -24,11 +24,10 @@ class PostService {
     });
   }
 
-  async update(id, authorUuid, title, content) {
-    if (typeof id === "string") id = parseInt(id);
+  async update(uuid, authorUuid, title, content) {
     return this.db.post.update({
       where: {
-        id,
+        uuid,
         authorUuid,
       },
       data: {
@@ -50,18 +49,16 @@ class PostService {
     });
   }
 
-  async findPost(id) {
-    if (typeof id === "string") id = parseInt(id);
+  async findPost(uuid) {
     return this.db.post.findUnique({
-      where: { id },
+      where: { uuid },
     });
   }
 
-  async deletePost(id, authorUuid) {
-    if (typeof id === "string") id = parseInt(id);
+  async deletePost(uuid, authorUuid) {
     return this.db.post.delete({
       where: {
-        id,
+        uuid,
         authorUuid,
       },
     });

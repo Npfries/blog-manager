@@ -3,29 +3,43 @@ import { useDisclosure } from "@mantine/hooks";
 import PostForm from "./PostForm";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import { slug } from "@blog-manager/utils";
 
 const PostListRow = ({ post }) => {
   const [editPostOpened, { open: openEditPost, close: closeEditPost }] = useDisclosure(false);
   const navigate = useNavigate();
 
   const deletePost = async () => {
-    await api.deletePost(post.id);
+    await api.deletePost(post.uuid);
     navigate(0);
+  };
+
+  const PostLink = () => {
+    const handle = slug.slugify(localStorage.getItem("handle"));
+    const title = slug.slugify(post.title);
+    const domain = "http://blog.localhost.com";
+    const link = `${domain}/${handle}/${title}`;
+    return (
+      <a href={link} target="_blank" rel="noreferrer">
+        <Text>{link}</Text>
+      </a>
+    );
   };
 
   return (
     <>
       <Card>
-        <Group position="apart">
+        <Group position="apart" grow>
           <Text>{post.title}</Text>
-          <Flex align="flex-end">
+          <PostLink></PostLink>
+          <Group position="right" ml="lg">
             <Button variant="outline" color="yellow" mr="sm" onClick={openEditPost}>
               Edit
             </Button>
             <Button variant="outline" color="red" onClick={deletePost}>
               Delete
             </Button>
-          </Flex>
+          </Group>
         </Group>
       </Card>
       <Modal
@@ -35,7 +49,7 @@ const PostListRow = ({ post }) => {
         fullScreen
         transitionProps={{ transition: "fade", duration: 200 }}
       >
-        <PostForm id={post.id}></PostForm>
+        <PostForm uuid={post.uuid}></PostForm>
       </Modal>
     </>
   );

@@ -26,6 +26,7 @@ class EventService {
     const queue = "blog-service";
     this.connection = await amqplib.connect(process.env.RABBIT_MQ_HOST ?? "localhost");
     this.channel = await this.connection.createChannel();
+    await this.channel.assertExchange(exchanges.POST_MODIFIED, "fanout", {});
     await this.channel.assertQueue(queue);
     await this.channel.bindQueue(queue, exchanges.POST_MODIFIED, "");
 
@@ -34,8 +35,7 @@ class EventService {
         if (msg !== null) {
           const { postUuid, authorUuid } = JSON.parse(msg.content.toString());
           this.channel.ack(msg);
-          console.log("published");
-          // await this.app.blogpostService.create();
+          this.app.blogpostService.createOrUpdateBlogpost(postUuid, authorUuid);
         } else {
           console.log("Consumer cancelled by server");
         }

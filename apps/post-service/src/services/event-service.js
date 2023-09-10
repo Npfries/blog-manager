@@ -16,7 +16,6 @@ class EventService {
     this.connection = await amqplib.connect(process.env.RABBIT_MQ_HOST ?? "localhost");
     this.channel = await this.connection.createChannel();
     await this.channel.assertExchange(exchanges.POST_MODIFIED, "fanout", {});
-    console.log("asserted");
   }
 
   /**

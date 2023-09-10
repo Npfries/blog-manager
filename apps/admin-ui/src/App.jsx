@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import api from "./utils/api";
 import Dashboard from "./pages/dashboard/Dashboard";
 
-function Root() {
+const Root = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,14 +26,14 @@ function Root() {
       </Routes>
     </>
   );
-}
+};
 
-function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <Root />
     </BrowserRouter>
   );
-}
+};
 
 export default App;

@@ -26,6 +26,7 @@ class EventService {
     const queue = "auth-service";
     this.connection = await amqplib.connect(process.env.RABBIT_MQ_HOST ?? "localhost");
     this.channel = await this.connection.createChannel();
+    await this.channel.assertExchange(exchanges.USER_CREATED, "fanout", {});
     await this.channel.assertQueue(queue);
     await this.channel.bindQueue(queue, exchanges.USER_CREATED, "");
 

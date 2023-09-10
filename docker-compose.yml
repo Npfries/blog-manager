@@ -22,6 +22,49 @@ services:
     networks:
       - blog-manager
 
+  comment-microfrontend:
+    container_name: comment-microfrontend
+    build:
+      context: ./apps/comment-microfrontend
+      target: dev
+      additional_contexts:
+        - repo=./
+
+    volumes:
+      - ./apps/comment-microfrontend/src:/app/src
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.comment-microfrontend.rule=Host(`comment-mfe.localhost.com`)"
+      - "traefik.http.routers.comment-microfrontend.entrypoints=web"
+      - "traefik.http.services.comment-microfrontend.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
+  comment-service:
+    container_name: comment-service
+    build:
+      context: ./apps/comment-service
+      target: dev
+      additional_contexts:
+        - repo=./
+    volumes:
+      - ./apps/comment-service/src:/app/src
+    environment:
+      - RABBIT_MQ_HOST=amqp://rabbitmq
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.comment-service.rule=Host(`comment-service.localhost.com`)"
+      - "traefik.http.routers.comment-service.entrypoints=web"
+      - "traefik.http.services.comment-service.loadbalancer.server.port=3000"
+    networks:
+      - blog-manager
+
   post-service:
     container_name: post-service
     build:
@@ -53,6 +96,7 @@ services:
         - repo=./
     volumes:
       - ./apps/blog-service/src:/app/src
+      - static-posts:/tmp/static-posts
     environment:
       - RABBIT_MQ_HOST=amqp://rabbitmq
     depends_on:
@@ -183,7 +227,7 @@ services:
     container_name: httpd
     image: httpd
     volumes:
-      - ./tmp/:/usr/local/apache2/htdocs/:ro
+      - static-posts:/usr/local/apache2/htdocs
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.blog.rule=Host(`blog.localhost.com`)"
@@ -194,3 +238,6 @@ services:
 
 networks:
   blog-manager:
+
+volumes:
+  static-posts:

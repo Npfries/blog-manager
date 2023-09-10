@@ -1,4 +1,8 @@
-Known security issues
+TODO:
+
+- Rewrite as a monolith
+
+Known security issues:
 
 - JWT stored in localstorage
 - refresh_token not implemented

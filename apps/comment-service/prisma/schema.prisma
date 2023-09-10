@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// model Post {
+//   id        Int     @id @default(autoincrement())
+//   uuid      String @unique
+//   title     String
+//   content   String
+//   author    String
+//   authorUuid  String 
+//   deleted   Boolean @default(false)
+// }
+
+model Comments {
+  id        Int       @id @default(autoincrement())
+  postId    String
+  parentId  Int?     
+  content   String
+  author    String
+  timestamp DateTime  @default(now())
+  deleted   Boolean   @default(false)
+}

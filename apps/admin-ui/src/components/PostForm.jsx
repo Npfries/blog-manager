@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
-const PostForm = ({ id }) => {
-  const isNew = id === undefined || id === null;
+const PostForm = ({ uuid }) => {
+  const isNew = uuid === undefined || uuid === null;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const PostForm = ({ id }) => {
   }, []);
 
   const loadPost = async () => {
-    const result = await api.findPost(id);
+    const result = await api.findPost(uuid);
     if (result.status === 200) {
       setTitle(result.body.title);
       setContent(result.body.content);
@@ -26,7 +26,7 @@ const PostForm = ({ id }) => {
       await api.createPost(title, content);
       navigate(0);
     } else {
-      await api.updatePost(id, title, content);
+      await api.updatePost(uuid, title, content);
       navigate(0);
     }
   };

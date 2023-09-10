@@ -4,7 +4,7 @@ import * as Types from "../types.js";
  * @param {Types.App} app
  * @param {Object} options
  */
-async function routes(app, options) {
+const routes = async (app, options) => {
   app.get("/user/:uuid", async (req, res) => {
     const user = await app.userService.find(req.params.uuid);
     if (!user) {
@@ -25,6 +25,6 @@ async function routes(app, options) {
     const result = await app.userService.find(uuid);
     res.send(result);
   });
-}
+};
 
 export default routes;

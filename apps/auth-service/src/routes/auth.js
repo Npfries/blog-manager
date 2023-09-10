@@ -4,7 +4,7 @@ import * as Types from "../types.js";
  * @param {Types.App} app
  * @param {Object} options
  */
-async function routes(app, options) {
+const routes = async (app, options) => {
   app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const uuid = await app.authService.validate(email, password);
@@ -26,6 +26,6 @@ async function routes(app, options) {
   });
 
   app.get("/logout", (req, res) => {});
-}
+};
 
 export default routes;

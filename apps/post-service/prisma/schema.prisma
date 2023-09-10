@@ -12,11 +12,12 @@ datasource db {
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
-  uuid      String
-  title     String
-  content   String
-  author    String
-  authorUuid  String 
-  deleted   Boolean @default(false)
+  id          Int       @id @default(autoincrement())
+  uuid        String    @unique
+  title       String
+  content     String    @db.Text
+  author      String
+  authorUuid  String
+  timestamp   DateTime  @default(now())
+  deleted     Boolean   @default(false)
 }

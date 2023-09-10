@@ -12,6 +12,15 @@ const LoginForm = () => {
     const result = await api.login(email, password);
     if (!result) return;
     localStorage.setItem("jwt", result);
+    try {
+      const userResult = await api.me();
+      const { name, email, handle } = userResult.body;
+      localStorage.setItem("name", name);
+      localStorage.setItem("email", email);
+      localStorage.setItem("handle", handle);
+    } catch (e) {
+      console.log("User service unreachable, prepare for degraded experience");
+    }
     navigate("/");
   };
 

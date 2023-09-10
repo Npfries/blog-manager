@@ -7,7 +7,6 @@ import PostListRow from "./PostListRow";
 
 const PostsList = () => {
   const [newPostOpened, { open: openNewPost, close: closeNewPost }] = useDisclosure(false);
-  const [editPostOpened, { open: openEditPost, close: closeEditPost }] = useDisclosure(false);
 
   const [posts, setPosts] = useState([]);
 
