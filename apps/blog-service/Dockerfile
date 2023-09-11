@@ -12,8 +12,6 @@ COPY . .
 
 COPY .env.docker .env
 
-RUN npx prisma generate
-
 COPY --from=repo ./lib/ ./node_modules/@blog-manager/
 
 FROM base AS build

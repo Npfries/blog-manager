@@ -4,8 +4,6 @@ const renderHtml = (id, post) => {
   const title = dp.sanitize(post.title);
   const content = dp.sanitize(post.content);
 
-  console.log(content);
-
   return `
     <html>
       <head>

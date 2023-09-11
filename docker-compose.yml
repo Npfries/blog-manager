@@ -57,6 +57,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.comment-service.rule=Host(`comment-service.localhost.com`)"
@@ -78,6 +80,8 @@ services:
       - RABBIT_MQ_HOST=amqp://rabbitmq
     depends_on:
       db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
@@ -102,11 +106,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.http.routers.blog-service.rule=Host(`blog-service.localhost.com`)"
-    #   - "traefik.http.routers.blog-service.entrypoints=web"
-    #   - "traefik.http.services.blog-service.loadbalancer.server.port=3000"
+      rabbitmq:
+        condition: service_healthy
     networks:
       - blog-manager
 
@@ -124,6 +125,8 @@ services:
       - RABBIT_MQ_HOST=amqp://rabbitmq
     depends_on:
       db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
@@ -147,6 +150,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth-service.rule=Host(`auth-service.localhost.com`)"
@@ -168,6 +173,8 @@ services:
       - RABBIT_MQ_HOST=amqp://rabbitmq
     depends_on:
       db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
@@ -196,6 +203,7 @@ services:
   rabbitmq:
     image: rabbitmq:management-alpine
     container_name: rabbitmq
+    user: "rabbitmq"
     ports:
       - 15672:15672
     healthcheck:

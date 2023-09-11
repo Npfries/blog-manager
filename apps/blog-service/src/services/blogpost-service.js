@@ -1,22 +1,9 @@
-import { PrismaClient } from "../../generated/client/index.js";
 import * as Types from "../types.js";
 import * as fs from "fs";
 import renderHtml from "../utils/renderHtml.js";
 import { slug } from "@blog-manager/utils";
 
 class BlogpostService {
-  db;
-  /**
-   * @param {PrismaClient} db
-   */
-  constructor(db) {
-    this.db = db;
-  }
-
-  async getPost() {}
-
-  async getAuthor() {}
-
   /**
    *
    * @param {string} handleSlug
@@ -78,7 +65,7 @@ class BlogpostService {
  * @param {Object} options
  */
 const blogpostServiceSingleton = async (app, options) => {
-  const service = new BlogpostService(app.db);
+  const service = new BlogpostService();
   app.decorate("blogpostService", service);
 };
 
