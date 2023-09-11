@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "pretest": "npx prisma generate",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "dev": "nodemon --exec \"node --require dotenv/config --require ./src/instrumentation.cjs ./src/index.js\"",
     "start": "node --require ./src/instrumentation.cjs ./src/index.js"
