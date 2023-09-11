@@ -53,9 +53,29 @@ The application consists of two largely independent systems of services, the blo
 
 #### Admin system
 
-The admin system consists of a single user interface, a signup service, a user service, an auth service, and a post service.
+The admin system consists of a single user interface, a signup service, a user service, an auth service, and a post service. Each microservice can be independently developed and deployed.
 
 ![admin architectural diagram](./docs/admin-arch-diagram.png)
+
+The admin dashboard is a React application. It communicates with each microservice via REST endpoints.
+
+Each microservice is a Node.js application using the Fastify framework, with a MariaDB database. Each microservice has a corresponding database with respective naming.
+
+No synchronous service-to-service communication occurs within the admin system. The minimal service-to-service communication that _does_ occur happens via events, utilizing rabbitmq fanout exchanges. Each can be independently developed and deployed.
+
+The user service is responsible for storing and retrieving user information, such as email, name, and user handle.
+
+The auth service is responsible for storing login information and issuing JWTs when valid credentials are provided.
+
+The post service is responsible for storing and retrieving post information, such as title, author and content.
+
+The signup service is responsible for handling the user signup flow. It is a stateless service that does not store any information.
+
+##### Example admin system user flow
+
+![signup flow diagram](./docs/signup-flow-diagram.png)
+
+This is an example of asynchronous communication in the user signup flow. The admin interface makes a POST request to the signup service, and the signup service publishes an event to the USER_CREATED fanout exchange. The user service and auth service assert individual queues on the exchange. This setup behaves like a pub/sub system.
 
 #### Blog system
 
@@ -67,11 +87,19 @@ The blog site is served from Apache httpd, utilizing the the /usr/local/htdocs a
 
 The comments microfrontend is a React application that is lazy-loaded at runtime by the blog site. It communicates with the comment service via REST endpoints. The comment feature is largely CRUD, with the exception of delete, as child comments would lose referential integrity and could be orphaned, so comment content is removed and the comment is anonymized.
 
-The comment microfrontend can be developed and tested independently from the blog site at `http://comment-mfe.localhost.com`
+The comment service is a Node.js application using the Fastify framework, with a MariaDB database.
+
+The comment microfrontend and comment service can be developed and tested independently from the blog site at `http://comment-mfe.localhost.com`
+
+##### Example blog system user flow
 
 ![comment feature diagram](./docs/comment-feature-diagram.png)
 
 The entire comment feature is represnted in this diagram. The only soft dependency is that the microfrontend host (the blog site in this case) provides the blog post slug to the comment microfrontend, so that it can associate comments to individual blog posts.
+
+#### How the systems work together
+
+![admin-blog relationship diagram](./docs/admin-blog-relationship-diagram.png)
 
 TODO:
 
