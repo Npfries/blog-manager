@@ -2,6 +2,7 @@ import { PrismaClient } from "../../generated/client/index.js";
 import * as Types from "../types.js";
 import * as fs from "fs";
 import renderHtml from "../utils/renderHtml.js";
+import { slug } from "@blog-manager/utils";
 
 class BlogpostService {
   db;
@@ -18,19 +19,11 @@ class BlogpostService {
 
   /**
    *
-   * @param {string} string
-   */
-  slugify = (string) => {
-    return string.replace(/ +/g, "-").toLowerCase();
-  };
-
-  /**
-   *
    * @param {string} handleSlug
    * @param {*} post
    */
   savePost(handleSlug, post) {
-    const titleSlug = this.slugify(post.title);
+    const titleSlug = slug.slugify(post.title);
 
     const dir = `/tmp/static-posts/${handleSlug}/${titleSlug}`;
     fs.mkdirSync(dir, { recursive: true });
@@ -69,7 +62,7 @@ class BlogpostService {
     const postResponse = await fetch(`http://post-service:3000/post/${postUuid}`);
     const post = await postResponse.json();
 
-    const handleSlug = this.slugify(author.handle);
+    const handleSlug = slug.slugify(author.handle);
 
     if (!post) {
       await this.syncPosts(author.uuid, handleSlug);
