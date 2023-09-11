@@ -101,6 +101,14 @@ The entire comment feature is represnted in this diagram. The only soft dependen
 
 ![admin-blog relationship diagram](./docs/admin-blog-relationship-diagram.png)
 
+When a post is published or modified, the post services publishes an event to the POST_MODIFIED exchange, which is consumed by the blog service. When the blog service consumes an event, it fetches the post information from the post service.
+
+While the post information could be included in the event, posts are of unknown size, and could be subject to change in the future. In order to minimize memory pressure on rabbitmq, only the post ID is sent in the event. In addition, the post service does not contain author information other than by reference, so the blog service would still need to fetch the author information from user service in either case.
+
+Once the blog service has assembled the necessary information from the post service and the user service, it "publishes" the post by storing a static HTML file in the `/usr/local/apache2/htdocs/` directory of the running httpd service in a subdirectory matching the pattern of /<user_handle>/<post_title> so httpd can servce the static blog post at the URL `http://blog.localhost.com/<user_handle>/<post_title>`.
+
+The code for generating the slug for the blog post is shared between the admin interface and the blog service, so the admin dashboard can eagerly display a link to the blog post without requiring a notification from the blog service.
+
 TODO:
 
 - Rewrite as a monolithic Next.js application (I jest, but really, this would've saved considerable time and effort, though I don't think it would've provided nearly the same learning experience)
@@ -112,6 +120,7 @@ Known security issues:
 - Placeholder secrets stored in .env files
 - Symmetrical JWT secrets shared among services
 - Naive or lacking sanitization of user input in several locations
+- Post slugs may not be URL-safe
 
 Potential future security improvements considered:
 
