@@ -1,5 +1,9 @@
 # Blog Manager
 
+A blog management platform utilizing an event-driven microservice architecture written in Javascript.
+
+## Setup
+
 ### Dependencies
 
 - Docker
@@ -43,7 +47,7 @@ npm run test
 
 \*this will execute `npm run test` in each of packages in `/apps` and `/lib`. Many of the packages do not contain tests. Jest is executed in each service individually, so the test count totals are not accurate with respect to the entire project.
 
-### Architecture
+## Architecture
 
 A high priority was placed on resillience of the architecture over simplicity. It was designed to continue to provide a usable, but degraded, experience in many failure scenarios. This was also an opportunity to explore some methodologies relatively new to me and create a learning experience.
 
@@ -51,7 +55,7 @@ An event driven microservice architecture was chosen over a monolithic architect
 
 The application consists of two largely independent systems of services, the blog system, and the admin system. The two systems can operate independently, relying on events (rabbitmq) to communicate state updates and allow consumer services to react accordingly. Service-to-service http requests are allowed when they are 1. unidirectional, and 2. a single service deep, otherwise, asynchronous events should be utilized, necessitating eventual-consistency tolerance.
 
-#### Admin system
+### Admin system
 
 The admin system consists of a single user interface, a signup service, a user service, an auth service, and a post service. Each microservice can be independently developed and deployed.
 
@@ -77,7 +81,7 @@ The signup service is responsible for handling the user signup flow. It is a sta
 
 This is an example of asynchronous communication in the user signup flow. The admin interface makes a POST request to the signup service, and the signup service publishes an event to the USER_CREATED fanout exchange. The user service and auth service assert individual queues on the exchange. This setup behaves like a pub/sub system.
 
-#### Blog system
+### Blog system
 
 The blog system consists of two user interfaces, the blog site, the comment microfrontend, and the comment microservice. Each can be independently developed and deployed.
 
@@ -97,7 +101,7 @@ The comment microfrontend and comment service can be developed and tested indepe
 
 The entire comment feature is represnted in this diagram. The only soft dependency is that the microfrontend host (the blog site in this case) provides the blog post slug to the comment microfrontend, so that it can associate comments to individual blog posts.
 
-#### How the systems work together
+### How the systems work together
 
 ![admin-blog relationship diagram](./docs/admin-blog-relationship-diagram.png)
 
@@ -125,7 +129,9 @@ The code for generating the slug for the blog post is shared between the admin i
     - blog-service -> post-service GET
 - Service-to-service amqp traces are sent to Jaeger (which is most of them)
 
-TODO:
+### Notes
+
+Todo:
 
 - Rewrite as a monolithic Next.js application (I jest, but really, this would've saved considerable time and effort, though I don't think it would've provided nearly the same learning experience)
 
@@ -145,3 +151,17 @@ Potential future security improvements considered:
 - Implement a secrets store (perhaps in CI/CD pipeline, or at deployment to ECS, EKS, etc.)
 - Unnecessary reloads in admin page to fetch state updates (such as on post creation / edit)
 - Improve sanitization and validation of user input
+
+Omitted:
+
+- User input sanitization
+- Comment feature auth
+- API validation
+- Error handling
+- User input validation
+- Deployment steps
+- Typescript
+- Integration tests
+- CI/CD pipeline
+- Blog homepage
+- Blog analytics
