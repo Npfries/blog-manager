@@ -1,4 +1,4 @@
 node_modules\
-generated/
+generated/client/
 # Keep environment variables out of version control, but this is a demo
 # .env
