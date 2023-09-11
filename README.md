@@ -23,8 +23,8 @@ docker compose up -d
 Add the following host names to your `/etc/hosts` file (or dnsmasq config, or platform specific hosts config)
 
 ```
-127.0.0.1	 post-service.localhost.com
-127.0.0.1	 user-service.localhost.com
+127.0.0.1    post-service.localhost.com
+127.0.0.1    user-service.localhost.com
 127.0.0.1    auth-service.localhost.com
 127.0.0.1    signup-service.localhost.com
 127.0.0.1    admin.localhost.com
