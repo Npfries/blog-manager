@@ -4,6 +4,7 @@ import { Card, Text } from "@mantine/core";
 import Comment from "./components/Comment";
 import api from "./utils/api";
 import CommentForm from "./components/CommentForm";
+import createCommentGraph from "./utils/commentGraph";
 
 const App = () => {
   const [comments, setComments] = useState([]);
@@ -26,27 +27,7 @@ const App = () => {
   };
 
   const orderComments = (unorderedComments) => {
-    const createCommentGraph = (commentList) => {
-      const map = {};
-
-      commentList.forEach((comment) => (map[comment.id] = comment));
-
-      commentList.forEach((comment) => {
-        if (comment.parentId !== null) {
-          const parent = map[comment.parentId];
-
-          if (parent.children === undefined) parent.children = [];
-          parent.children.push(comment);
-        }
-      });
-
-      const result = commentList.filter((comment) => comment.parentId === null);
-
-      return result;
-    };
-
     const result = createCommentGraph(unorderedComments);
-    console.log(result);
     setComments(result);
   };
 
@@ -55,7 +36,7 @@ const App = () => {
   };
 
   return (
-    <Card mt="lg">
+    <Card mt={50}>
       <Text fz="lg" fw={500} mb="md">
         Comments
       </Text>

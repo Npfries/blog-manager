@@ -14,6 +14,11 @@ const routes = async (app, options) => {
     return app.commentService.addComment(postId, parentId, author, content);
   });
 
+  app.put("/comment/:id", async (req, res) => {
+    const { content } = req.body;
+    return app.commentService.updateComment(req.params.id, content);
+  });
+
   app.delete("/comment/:id", async (req, res) => {
     return app.commentService.deleteComment(req.params.id);
   });

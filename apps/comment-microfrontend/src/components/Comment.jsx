@@ -5,9 +5,11 @@ import api from "../utils/api";
 
 const Comment = ({ comment, depth, onCommentSaved }) => {
   const [replying, setReplying] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const commentSaved = (newComment) => {
     setReplying(false);
+    setEditing(false);
     if (typeof onCommentSaved === "function") {
       onCommentSaved(newComment);
     }
@@ -27,10 +29,10 @@ const Comment = ({ comment, depth, onCommentSaved }) => {
   const Buttons = () => {
     return (
       <>
-        <Button compact variant="subtle" onClick={setReplying}>
+        <Button compact variant="subtle" onClick={() => setReplying(true)}>
           Reply
         </Button>
-        <Button compact variant="subtle" color="yellow">
+        <Button compact variant="subtle" color="yellow" onClick={() => setEditing(true)}>
           Edit
         </Button>
         <Button compact variant="subtle" color="red" onClick={commentDeleted}>
@@ -43,15 +45,27 @@ const Comment = ({ comment, depth, onCommentSaved }) => {
   return (
     <>
       <Card shadow="sm" p="xs" ml={depth * 25} mt="xs">
-        <Text m={3} mb="xs">
-          {comment.content || (
-            <Text fs="italic" color="gray">
-              comment deleted by user
+        {editing ? (
+          <CommentForm
+            id={comment.id}
+            parentId={comment.parentId}
+            postId={comment.postId}
+            onCommentSaved={commentSaved}
+            initialContent={comment.content}
+          ></CommentForm>
+        ) : (
+          <>
+            <Text m={3} mb="xs">
+              {comment.content || (
+                <Text fs="italic" color="gray">
+                  comment deleted by user
+                </Text>
+              )}
             </Text>
-          )}
-        </Text>
-        {comment.content !== "" ? <Buttons></Buttons> : null}
-        {replying ? <CommentForm parentId={comment.id} postId={comment.postId} onCommentSaved={commentSaved}></CommentForm> : null}
+            {comment.content !== "" && !replying ? <Buttons></Buttons> : null}
+            {replying ? <CommentForm parentId={comment.id} postId={comment.postId} onCommentSaved={commentSaved}></CommentForm> : null}
+          </>
+        )}
       </Card>
 
       {childComments}

@@ -41,7 +41,7 @@ The admin dasboard login/signup page should be accessible at `http://admin.local
 npm run test
 ```
 
-\*this will execute `npm run test` in each of packages in `/apps` and `/lib`. Many of the packages do not contain tests.
+\*this will execute `npm run test` in each of packages in `/apps` and `/lib`. Many of the packages do not contain tests. Jest is executed in each service individually, so the test count totals are not accurate with respect to the entire project.
 
 ### Architecture
 
@@ -101,13 +101,29 @@ The entire comment feature is represnted in this diagram. The only soft dependen
 
 ![admin-blog relationship diagram](./docs/admin-blog-relationship-diagram.png)
 
-When a post is published or modified, the post services publishes an event to the POST_MODIFIED exchange, which is consumed by the blog service. When the blog service consumes an event, it fetches the post information from the post service.
+\*admin system represented in the dashed area on the left, blog system on the right
+
+When a post is published or modified, the post services publishes an event to the POST_MODIFIED exchange, which is consumed by the blog service. When the blog service consumes an event, it fetches the post information from the post service, and fetches (public) author information from the user service.
 
 While the post information could be included in the event, posts are of unknown size, and could be subject to change in the future. In order to minimize memory pressure on rabbitmq, only the post ID is sent in the event. In addition, the post service does not contain author information other than by reference, so the blog service would still need to fetch the author information from user service in either case.
 
 Once the blog service has assembled the necessary information from the post service and the user service, it "publishes" the post by storing a static HTML file in the `/usr/local/apache2/htdocs/` directory of the running httpd service in a subdirectory matching the pattern of /<user_handle>/<post_title> so httpd can servce the static blog post at the URL `http://blog.localhost.com/<user_handle>/<post_title>`.
 
 The code for generating the slug for the blog post is shared between the admin interface and the blog service, so the admin dashboard can eagerly display a link to the blog post without requiring a notification from the blog service.
+
+### Observability
+
+- Jaeger web UI is available at `http://localhost:16686`
+- Duplicate GET requests in Jaeger
+  - docker-compose.yml is configured to target the `dev` stage of each Dockerfile
+  - React.StrictMode is enabled
+  - This leads to duplicate GET requests showing up in Jaeger
+- Service-to-service http traces are not sent to Jaeger
+  - This is a bug
+  - Two known specific traces are missing
+    - blog-service -> user-service GET
+    - blog-service -> post-service GET
+- Service-to-service amqp traces are sent to Jaeger (which is most of them)
 
 TODO:
 

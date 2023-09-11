@@ -10,7 +10,11 @@ const exporter = new JaegerExporter({
 const sdk = new NodeSDK({
   spanProcessor: new SimpleSpanProcessor(exporter),
   traceExporter: exporter,
-  instrumentations: [new HttpInstrumentation(), new FastifyInstrumentation(), new AmqplibInstrumentation()],
+  instrumentations: [
+    new HttpInstrumentation({ requireParentforOutgoingSpans: false }),
+    new FastifyInstrumentation(),
+    new AmqplibInstrumentation(),
+  ],
   serviceName: "post-service",
 });
 

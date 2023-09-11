@@ -7,6 +7,7 @@ const renderHtml = (id, post) => {
   return `
     <html>
       <head>
+        <title>${title}</title>
         <style>
           body {
             font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;

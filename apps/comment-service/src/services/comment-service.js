@@ -33,6 +33,18 @@ class CommentService {
     });
   }
 
+  async updateComment(id, content) {
+    if (typeof id === "string") id = parseInt(id);
+    return this.db.comments.update({
+      where: {
+        id,
+      },
+      data: {
+        content,
+      },
+    });
+  }
+
   /**
    *
    * @param {number} id

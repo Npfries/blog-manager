@@ -7,10 +7,15 @@ const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
 const exporter = new JaegerExporter({
   endpoint: `http://jaeger:14268/api/traces`,
 });
+
 const sdk = new NodeSDK({
   spanProcessor: new SimpleSpanProcessor(exporter),
   traceExporter: exporter,
-  instrumentations: [new HttpInstrumentation(), new FastifyInstrumentation(), new AmqplibInstrumentation()],
+  instrumentations: [
+    new HttpInstrumentation({ requireParentforOutgoingSpans: false }),
+    new FastifyInstrumentation(),
+    new AmqplibInstrumentation(),
+  ],
   serviceName: "user-service",
 });
 
